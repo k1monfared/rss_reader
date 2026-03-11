@@ -1,0 +1,76 @@
+- read rss feeds like good ol' googlereads
+    [x] figure out what open source projects exists for using as an RSS reader
+        - top self-hosted web apps (google reader-like)
+            - FreshRSS (~14.3k stars, PHP)
+                most popular, google reader API, handles 100k+ articles
+                https://github.com/FreshRSS/FreshRSS
+            - Miniflux (~8.9k stars, Go)
+                minimalist, single binary, fast and lean
+                https://github.com/miniflux/v2
+            - NewsBlur (~6.7k stars, Python/Django)
+                intelligence/training features, social reading, heavy infra
+                https://github.com/samuelclay/NewsBlur
+            - CommaFeed (~3.4k stars, Java/React)
+                closest UI to original google reader, lightweight
+                https://github.com/Athou/commafeed
+            - Feedbin (~3.5k stars, Ruby on Rails)
+                polished, newsletter + podcast support, complex self-hosting
+                https://github.com/feedbin/feedbin
+            - Stringer (~4k stars, Ruby/Sinatra)
+                anti-social, minimalist, heroku-deployable
+                https://github.com/stringer-rss/stringer
+            - Fusion (~1.7k stars, Go/Svelte)
+                newer, ~80MB memory, single binary
+                https://github.com/0x2E/fusion
+            - Selfoss (~2.4k stars, PHP)
+                lightweight, multipurpose aggregator, maintenance mode
+                https://github.com/fossar/selfoss
+            - Tiny Tiny RSS (PHP)
+                retired Nov 2025, community fork exists
+                https://github.com/tt-rss/tt-rss
+        - desktop apps
+            - NetNewsWire (~9.4k stars, macOS/iOS only)
+                https://github.com/Ranchero-Software/NetNewsWire
+            - Fluent Reader (~8.9k stars, Win/Mac/Linux)
+                https://github.com/yang991178/fluent-reader
+            - Newsboat (~3.6k stars, terminal CLI)
+                https://github.com/newsboat/newsboat
+        - libraries for building your own
+            - gofeed (Go) - universal RSS/Atom/JSON parser
+                https://github.com/mmcdole/gofeed
+            - feedparser (Python) - classic python feed parser
+                https://github.com/kurtmckee/feedparser
+        - best picks for google reader experience
+            1. CommaFeed - closest to original google reader UI
+            2. FreshRSS - best all-around (most features, best mobile client support)
+            3. Miniflux - best for minimalism and speed
+        - self-hosting requirements
+            - easiest (single container, no external DB)
+                - Fusion: 1 container, embedded SQLite, ~50MB RAM
+                    docker run -p 8080:8080 -v $(pwd)/fusion:/data -e FUSION_PASSWORD="pass" ghcr.io/0x2e/fusion:latest
+                - CommaFeed: 1 container, embedded H2 DB, ~128-256MB RAM
+                    docker run -p 8082:8082 athou/commafeed
+                - FreshRSS: 1 container, SQLite default, ~128MB RAM
+                    docker run -p 8080:80 -e 'CRON_MIN=1,31' -v freshrss_data:/var/www/FreshRSS/data freshrss/freshrss
+            - easy (needs PostgreSQL)
+                - Miniflux: 2 containers (app + postgres), ~64MB RAM + PG
+                - Stringer: 3 containers (setup + app + postgres), ~256MB RAM + PG
+            - medium (no docker)
+                - Selfoss: bare PHP, SQLite default, ~64MB RAM, needs PHP web server + cron
+            - hard (heavy infrastructure)
+                - NewsBlur: 11-12 containers, PG + MongoDB + Redis + Elasticsearch, 2-4GB RAM
+                - Feedbin: 11+ containers, PG + Redis + ES + Memcached + Minio, 2+GB RAM, no official self-host support
+    [x] local setup requirements
+        - prerequisites: just Docker (already installed, v28.2.2)
+        - no domain, SSL, or reverse proxy needed for local use
+        - quick start commands (run one, then open in browser)
+            - Fusion (simplest, ~50MB RAM)
+                docker run -d -p 8080:8080 -v fusion:/data -e FUSION_PASSWORD="yourpassword" ghcr.io/0x2e/fusion:latest
+                open http://localhost:8080
+            - CommaFeed (closest to Google Reader, ~128MB RAM)
+                docker run -d -p 8082:8082 -v commafeed:/commafeed/data athou/commafeed
+                open http://localhost:8082
+            - FreshRSS (most features, ~128MB RAM)
+                docker run -d -p 8080:80 -e 'CRON_MIN=1,31' -v freshrss_data:/var/www/FreshRSS/data freshrss/freshrss
+                open http://localhost:8080
+    [] pick one to install or build our own
