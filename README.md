@@ -1,35 +1,37 @@
-# Project Name
+# RSS Reader
 
-**Status**: 🔴 POC | **Mode**: 🤖 Claude Code | **Updated**: YYYY-MM-DD
+Research and planning for a self-hosted RSS reader to replace the Google Reader experience.
 
-Brief description of what this project does.
+## Goal
 
-## Features
+Run an RSS reader locally with Docker -- no domain, SSL, or reverse proxy needed. Just a single `docker run` command and open it in a browser.
 
-- Feature 1
-- Feature 2
-- Feature 3
+## Top Picks
 
-## Getting Started
+| App | Style | RAM | Docker Complexity | Notes |
+|-----|-------|-----|-------------------|-------|
+| [Fusion](https://github.com/0x2E/fusion) | Minimalist (Go/Svelte) | ~50 MB | 1 container, SQLite | Simplest to run |
+| [CommaFeed](https://github.com/Athou/commafeed) | Closest to Google Reader | ~128 MB | 1 container, embedded H2 | Best classic UI |
+| [FreshRSS](https://github.com/FreshRSS/FreshRSS) | Feature-rich (PHP) | ~128 MB | 1 container, SQLite | Most popular, best mobile support |
+| [Miniflux](https://github.com/miniflux/v2) | Minimalist (Go) | ~64 MB + PG | 2 containers (app + PostgreSQL) | Fast, lean |
 
-Instructions for setup and usage.
+## Quick Start
 
-## Documentation
+Pick one and run it (requires Docker):
 
-- `STATUS.log` - Project status and progress tracking
-- `CLAUDE.md` - Claude Code instructions and conventions
-- See other documentation files as needed
+```bash
+# Fusion (simplest, ~50 MB RAM)
+docker run -d -p 8080:8080 -v fusion:/data -e FUSION_PASSWORD="yourpassword" ghcr.io/0x2e/fusion:latest
 
-## Status Legend
+# CommaFeed (closest to Google Reader, ~128 MB RAM)
+docker run -d -p 8082:8082 -v commafeed:/commafeed/data athou/commafeed
 
-- 🔴 POC / Early Stage
-- 🟡 MVP / In Progress
-- 🔵 Beta / Feature Complete
-- 🟢 Production / Active
-- ⚫ Maintenance / Template
+# FreshRSS (most features, ~128 MB RAM)
+docker run -d -p 8080:80 -e 'CRON_MIN=1,31' -v freshrss_data:/var/www/FreshRSS/data freshrss/freshrss
+```
 
-## Mode Legend
+Then open `http://localhost:8080` (or `:8082` for CommaFeed) in your browser.
 
-- 🤖 Claude Code
-- 👤 Manual
-- 🔀 Hybrid
+## Status
+
+Research phase. The full survey of self-hosted and desktop RSS readers is in `readme.log`. Next step: pick one to install or build a custom reader.
